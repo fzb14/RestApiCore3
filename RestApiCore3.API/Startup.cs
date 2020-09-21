@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using AutoMapper;
+using System;
 
 namespace RestApiCore3.API
 {
@@ -27,7 +29,9 @@ namespace RestApiCore3.API
                setupAction.ReturnHttpNotAcceptable = true;
                //setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
            }).AddXmlDataContractSerializerFormatters();//input and output
-             
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddScoped<IRestApiCore3Repository, RestApiCore3Repository>();
 
             services.AddDbContext<RestApiCore3Context>(options =>

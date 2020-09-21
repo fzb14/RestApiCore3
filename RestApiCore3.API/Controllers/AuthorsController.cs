@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,34 +19,36 @@ namespace RestApiCore3.API.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly IRestApiCore3Repository _repos;
+        private readonly IMapper mapper;
 
-        public AuthorsController(IRestApiCore3Repository repos)
+        public AuthorsController(IRestApiCore3Repository repos, IMapper mapper)
         {
             _repos = repos;
+            this.mapper = mapper;
         }
 
         // GET: api/Authors
         [HttpGet]
-        public IActionResult GetAuthors()
+        public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
         {
-            var authors = new List<AuthorDto>();
-            foreach(var a in _repos.GetAuthors())
-            {
-                authors.Add(new AuthorDto
-                {
-                    Id=a.Id,
-                    Name = $"{a.FirstName} {a.LastName}",
-                    MainCategory = a.MainCategory,
-                    Age = a.DateOfBirth.GetAge()
-                });
-            }
-
+            //var authors = new List<AuthorDto>();
+            //foreach(var a in _repos.GetAuthors())
+            //{
+            //    authors.Add(new AuthorDto
+            //    {
+            //        Id=a.Id,
+            //        Name = $"{a.FirstName} {a.LastName}",
+            //        MainCategory = a.MainCategory,
+            //        Age = a.DateOfBirth.GetAge()
+            //    });
+            //}
+            var authors = mapper.Map<IEnumerable<AuthorDto>>(_repos.GetAuthors());
             return Ok(authors);
         }
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
-        public IActionResult GetAuthor(Guid id)
+        public ActionResult<AuthorDto> GetAuthor(Guid id)
         {
             var author = _repos.GetAuthor(id);
 
@@ -53,13 +56,14 @@ namespace RestApiCore3.API.Controllers
             {
                 return NotFound();
             }
-            var authorDto = new AuthorDto
-            {
-                Id = author.Id,
-                Name = $"{author.FirstName} {author.LastName}",
-                Age = author.DateOfBirth.GetAge(),
-                MainCategory = author.MainCategory
-            };
+            //var authorDto = new AuthorDto
+            //{
+            //    Id = author.Id,
+            //    Name = $"{author.FirstName} {author.LastName}",
+            //    Age = author.DateOfBirth.GetAge(),
+            //    MainCategory = author.MainCategory
+            //};
+            var authorDto = mapper.Map<AuthorDto>(author);
             return Ok(authorDto);
         }
 
