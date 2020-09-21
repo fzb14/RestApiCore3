@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestApiCore3.API.DbContexts;
 using RestApiCore3.API.Entities;
+using RestApiCore3.API.Helpers;
+using RestApiCore3.API.Models;
 using RestApiCore3.API.Services;
 
 namespace RestApiCore3.API.Controllers
@@ -26,7 +28,19 @@ namespace RestApiCore3.API.Controllers
         [HttpGet]
         public IActionResult GetAuthors()
         {
-            return Ok(_repos.GetAuthors());
+            var authors = new List<AuthorDto>();
+            foreach(var a in _repos.GetAuthors())
+            {
+                authors.Add(new AuthorDto
+                {
+                    Id=a.Id,
+                    Name = $"{a.FirstName} {a.LastName}",
+                    MainCategory = a.MainCategory,
+                    Age = a.DateOfBirth.GetAge()
+                });
+            }
+
+            return Ok(authors);
         }
 
         // GET: api/Authors/5
@@ -39,8 +53,14 @@ namespace RestApiCore3.API.Controllers
             {
                 return NotFound();
             }
-
-            return Ok(author);
+            var authorDto = new AuthorDto
+            {
+                Id = author.Id,
+                Name = $"{author.FirstName} {author.LastName}",
+                Age = author.DateOfBirth.GetAge(),
+                MainCategory = author.MainCategory
+            };
+            return Ok(authorDto);
         }
 
         // PUT: api/Authors/5
