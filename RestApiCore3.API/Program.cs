@@ -23,7 +23,7 @@ namespace RestApiCore3.API
                     var context = scope.ServiceProvider.GetService<RestApiCore3Context>();
                     // for demo purposes, delete the database & migrate on startup so 
                     // we can start with a clean slate
-                    context.Database.EnsureDeleted();
+                    //context.Database.EnsureDeleted();
                     context.Database.Migrate();
                 }
                 catch (Exception ex)

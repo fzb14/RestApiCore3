@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace RestApiCore3.API
 {
@@ -22,7 +23,10 @@ namespace RestApiCore3.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           services.AddControllers();
+           services.AddControllers(setupAction => {
+               setupAction.ReturnHttpNotAcceptable = true;
+               //setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+           }).AddXmlDataContractSerializerFormatters();//input and output
              
             services.AddScoped<IRestApiCore3Repository, RestApiCore3Repository>();
 

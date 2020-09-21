@@ -1,8 +1,10 @@
-﻿using RestApiCore3.API.DbContexts;
+﻿using Microsoft.EntityFrameworkCore;
+using RestApiCore3.API.DbContexts;
 using RestApiCore3.API.Entities; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RestApiCore3.API.Services
 {
@@ -114,12 +116,16 @@ namespace RestApiCore3.API.Services
                 throw new ArgumentNullException(nameof(authorId));
             }
 
-            return _context.Authors.FirstOrDefault(a => a.Id == authorId);
+            return _context.Authors
+                //.Include(a=>a.Courses)
+                .FirstOrDefault(a => a.Id == authorId);
         }
 
         public IEnumerable<Author> GetAuthors()
         {
-            return _context.Authors.ToList<Author>();
+            return _context.Authors
+                //.Include(a => a.Courses)
+                .ToList<Author>();
         }
          
         public IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds)
