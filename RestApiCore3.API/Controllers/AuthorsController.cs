@@ -29,6 +29,7 @@ namespace RestApiCore3.API.Controllers
 
         // GET: api/Authors
         [HttpGet]
+        [HttpHead]
         public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
         {
             //throw new Exception("test exception.");
