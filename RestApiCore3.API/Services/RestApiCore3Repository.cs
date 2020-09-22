@@ -120,12 +120,21 @@ namespace RestApiCore3.API.Services
                 //.Include(a=>a.Courses)
                 .FirstOrDefault(a => a.Id == authorId);
         }
-
         public IEnumerable<Author> GetAuthors()
         {
             return _context.Authors
                 //.Include(a => a.Courses)
                 .ToList<Author>();
+        }
+        public IEnumerable<Author> GetAuthors(string mainCategory)
+        {
+            
+            if (string.IsNullOrWhiteSpace(mainCategory))
+            {
+                return GetAuthors();
+            }
+            mainCategory = mainCategory.Trim();
+            return _context.Authors.Where(a => a.MainCategory == mainCategory).ToList();
         }
          
         public IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds)
