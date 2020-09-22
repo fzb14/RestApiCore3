@@ -22,6 +22,7 @@ namespace RestApiCore3.API.Profiles
                     dest => dest.Age,
                     opt => opt.MapFrom(src => src.DateOfBirth.GetAge())
                 );
+            CreateMap<AuthorForCreateDto, Author>();
         }
     }
 }

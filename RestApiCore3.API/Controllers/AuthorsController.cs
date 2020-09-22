@@ -52,7 +52,7 @@ namespace RestApiCore3.API.Controllers
         }
 
         // GET: api/Authors/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="GetAuthor")]
         public ActionResult<AuthorDto> GetAuthor(Guid id)
         {
             var author = _repos.GetAuthor(id);
@@ -104,17 +104,18 @@ namespace RestApiCore3.API.Controllers
         //    return NoContent();
         //}
 
-        //// POST: api/Authors
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for
-        //// more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        //[HttpPost]
-        //public async Task<ActionResult<Author>> PostAuthor(Author author)
-        //{
-        //    _context.Authors.Add(author);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
-        //}
+        // POST: api/Authors
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPost]
+        public ActionResult<AuthorDto> PostAuthor(AuthorForCreateDto author)
+        {
+            var authorEntity = mapper.Map<Author>(author);
+            _repos.AddAuthor(authorEntity);
+            _repos.Save();
+            var authorResult = mapper.Map<AuthorDto>(authorEntity);
+            return CreatedAtAction("GetAuthor", new { id = authorResult.Id }, authorResult);
+        }
 
         //// DELETE: api/Authors/5
         //[HttpDelete("{id}")]
