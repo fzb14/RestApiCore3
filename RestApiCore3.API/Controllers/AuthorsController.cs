@@ -11,6 +11,7 @@ using RestApiCore3.API.Entities;
 using RestApiCore3.API.Helpers;
 using RestApiCore3.API.Models;
 using RestApiCore3.API.Services;
+using RestApiCore3.API.SourceParameters;
 
 namespace RestApiCore3.API.Controllers
 {
@@ -30,7 +31,7 @@ namespace RestApiCore3.API.Controllers
         // GET: api/Authors
         [HttpGet]
         [HttpHead]
-        public ActionResult<IEnumerable<AuthorDto>> GetAuthors([FromQuery]string mainCategory, string searchQuery)
+        public ActionResult<IEnumerable<AuthorDto>> GetAuthors([FromQuery]AuthorSourchParameters parameters)
         {
             //throw new Exception("test exception.");
             //var authors = new List<AuthorDto>();
@@ -44,7 +45,7 @@ namespace RestApiCore3.API.Controllers
             //        Age = a.DateOfBirth.GetAge()
             //    });
             //}
-            var source = _repos.GetAuthors(mainCategory, searchQuery);
+            var source = _repos.GetAuthors(parameters?.MainCategory, parameters?.SearchQuery);
 
             var authors = mapper.Map<IEnumerable<AuthorDto>>(source);
             return Ok(authors);
