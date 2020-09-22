@@ -25,10 +25,12 @@ namespace RestApiCore3.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           services.AddControllers(setupAction => {
-               setupAction.ReturnHttpNotAcceptable = true;
-               //setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-           }).AddXmlDataContractSerializerFormatters();//input and output
+            services.AddControllers(setupAction => {
+                setupAction.ReturnHttpNotAcceptable = true;
+                //setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+            })
+                 .AddJsonOptions(o => o.JsonSerializerOptions.WriteIndented = true)
+                .AddXmlDataContractSerializerFormatters();//input and output
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
