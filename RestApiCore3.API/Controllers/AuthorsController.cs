@@ -30,7 +30,7 @@ namespace RestApiCore3.API.Controllers
         // GET: api/Authors
         [HttpGet]
         [HttpHead]
-        public ActionResult<IEnumerable<AuthorDto>> GetAuthors([FromQuery]string mainCategory)
+        public ActionResult<IEnumerable<AuthorDto>> GetAuthors([FromQuery]string mainCategory, string searchQuery)
         {
             //throw new Exception("test exception.");
             //var authors = new List<AuthorDto>();
@@ -44,7 +44,7 @@ namespace RestApiCore3.API.Controllers
             //        Age = a.DateOfBirth.GetAge()
             //    });
             //}
-            var source = _repos.GetAuthors(mainCategory);
+            var source = _repos.GetAuthors(mainCategory, searchQuery);
 
             var authors = mapper.Map<IEnumerable<AuthorDto>>(source);
             return Ok(authors);
