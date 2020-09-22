@@ -50,6 +50,15 @@ namespace RestApiCore3.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler(appBuilder => {
+                    appBuilder.Run(async context => {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("an exception happened. try again later.");
+                    });
+                });
+            }
 
             app.UseRouting();
 

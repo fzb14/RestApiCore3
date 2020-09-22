@@ -31,6 +31,7 @@ namespace RestApiCore3.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
         {
+            //throw new Exception("test exception.");
             //var authors = new List<AuthorDto>();
             //foreach(var a in _repos.GetAuthors())
             //{

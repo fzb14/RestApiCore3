@@ -31,6 +31,20 @@ namespace RestApiCore3.API.Controllers
             var courses = repository.GetCourses(authorId);
             return Ok(mapper.Map<IEnumerable<CourseDto>>(courses));
         }
+        [HttpGet("{courseId}")]
+        public ActionResult<CourseDto> GetCourseForAuthor(Guid authorId, Guid courseId)
+        {
+            if (!repository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
+            var course = repository.GetCourse(authorId, courseId);
+            if (course == null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<CourseDto>(course));
+        }
     }
 
     
