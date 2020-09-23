@@ -15,7 +15,7 @@ namespace RestApiCore3.API.ValidationAttributes
             var course = (CourseForCreateDto)validationContext.ObjectInstance;
             if (course.Title == course.Description)
             {
-                return new ValidationResult("Title should be different from Description.", new[] { nameof(CourseForCreateDto) });
+                return new ValidationResult(ErrorMessage, new[] { nameof(CourseForCreateDto) });
             }
             return ValidationResult.Success;
         }

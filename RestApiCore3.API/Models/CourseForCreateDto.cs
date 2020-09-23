@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace RestApiCore3.API.Models
 {
-    [CourseTitleMustBeDifferentFromDescription]
+    [CourseTitleMustBeDifferentFromDescription(ErrorMessage ="title cannot be the same as description!!")]
     public class CourseForCreateDto //: IValidatableObject
     {
         [Required]
-        [MaxLength(100)]
+        [MaxLength(100, ErrorMessage ="title length must be less than 100!!")]
         public string Title { get; set; }
-        [MaxLength(1500)]
+        [MaxLength(1500, ErrorMessage ="description length must be less than 1500!!")]
         public string Description { get; set; }
 
         //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
