@@ -137,5 +137,12 @@ namespace RestApiCore3.API.Controllers
         //{
         //    return _context.Authors.Any(e => e.Id == id);
         //}
+
+        [HttpOptions]
+        public IActionResult GetAuthorsOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            return Ok();
+        }
     }
 }
