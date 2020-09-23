@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RestApiCore3.API.Entities;
 using RestApiCore3.API.Models;
 using RestApiCore3.API.Services;
 using System;
@@ -31,7 +32,7 @@ namespace RestApiCore3.API.Controllers
             var courses = repository.GetCourses(authorId);
             return Ok(mapper.Map<IEnumerable<CourseDto>>(courses));
         }
-        [HttpGet("{courseId}")]
+        [HttpGet("{courseId}", Name ="GetCourseForAuthor")]
         public ActionResult<CourseDto> GetCourseForAuthor(Guid authorId, Guid courseId)
         {
             if (!repository.AuthorExists(authorId))
@@ -44,6 +45,19 @@ namespace RestApiCore3.API.Controllers
                 return NotFound();
             }
             return Ok(mapper.Map<CourseDto>(course));
+        }
+        [HttpPost]
+        public ActionResult<CourseDto> CreateCourseForAuthor(Guid authorId, CourseForCreateDto courseForCreate)
+        {
+            if (!repository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
+            var courseEntity = mapper.Map<Course>(courseForCreate);
+            repository.AddCourse(authorId, courseEntity);
+            repository.Save();
+            var courseToReturn = mapper.Map<CourseDto>(courseEntity);
+            return CreatedAtRoute("GetCourseForAuthor", new { authorId = authorId, courseId = courseToReturn.Id }, courseToReturn);
         }
     }
 
