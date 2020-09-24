@@ -59,6 +59,18 @@ namespace RestApiCore3.API.Controllers
             var courseToReturn = mapper.Map<CourseDto>(courseEntity);
             return CreatedAtRoute("GetCourseForAuthor", new { authorId = authorId, courseId = courseToReturn.Id }, courseToReturn);
         }
+        [HttpPut("{courseId}")]
+        public ActionResult<CourseDto> UpdateCourseForAuthor(Guid authorId, Guid courseId, CourseForUpdateDto courseForUpdate)
+        {
+            var courseEntity = repository.GetCourse(authorId, courseId);
+            if (courseEntity == null)
+                return NotFound();
+            mapper.Map(courseForUpdate, courseEntity);
+            repository.UpdateCourse(courseEntity);
+            repository.Save();
+            var courseDto = mapper.Map<CourseDto>(courseEntity);
+            return Ok(courseDto);
+        }
     }
 
     

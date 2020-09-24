@@ -14,6 +14,7 @@ namespace RestApiCore3.API.Profiles
         {
             CreateMap<Course, CourseDto>();
             CreateMap<CourseForCreateDto, Course>();
+            CreateMap<CourseForUpdateDto, Course>();
         }
     }
 }
