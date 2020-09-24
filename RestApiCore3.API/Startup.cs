@@ -10,6 +10,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using AutoMapper;
 using System;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RestApiCore3.API
 {
@@ -25,12 +28,42 @@ namespace RestApiCore3.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(setupAction => {
+            services.AddControllers(setupAction =>
+            {
                 setupAction.ReturnHttpNotAcceptable = true;
                 //setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
             })
                  .AddJsonOptions(o => o.JsonSerializerOptions.WriteIndented = true)
-                .AddXmlDataContractSerializerFormatters();//input and output
+                .AddXmlDataContractSerializerFormatters()//input and output
+                .ConfigureApiBehaviorOptions(setupAction => {
+                    setupAction.InvalidModelStateResponseFactory = context =>
+                    {
+                        var problemDetailFactory = context.HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
+                        var problemDetail = problemDetailFactory.CreateValidationProblemDetails(context.HttpContext, context.ModelState);
+                        problemDetail.Detail = "see the error field for details";
+                        problemDetail.Instance = context.HttpContext.Request.Path;
+                        var actionExecutingContext = context as ActionExecutingContext;
+                        if ((context.ModelState.ErrorCount>0)&&(actionExecutingContext?.ActionArguments.Count == context.ActionDescriptor.Parameters.Count))
+                        {
+                            problemDetail.Type = "https://courselibrary.com/modelvalidationproblem";
+                            problemDetail.Status = StatusCodes.Status422UnprocessableEntity;
+                            problemDetail.Title = "One or more validation errors occured.";
+                            return new UnprocessableEntityObjectResult(problemDetail)
+                            {
+                                ContentTypes = {"application/problem+json" }
+                            };
+                        }
+                        //if one of the arguments wasn't correctly found / couldn't be parsed
+                        //we're dealing with null/unparseable input
+                        problemDetail.Status = StatusCodes.Status400BadRequest;
+                        problemDetail.Title = "One or more errors on input occured.";
+                        return new BadRequestObjectResult(problemDetail)
+                        {
+                            ContentTypes = { "application/problem+json" }
+                        };
+                    };
+                    
+                });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
