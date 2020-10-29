@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RestApiCore3.API.Entities;
 using RestApiCore3.API.Models;
@@ -83,6 +84,27 @@ namespace RestApiCore3.API.Controllers
             var courseDto = mapper.Map<CourseDto>(courseEntity);
             return Ok(courseDto);
         }
+        [HttpPatch("{courseId}")]
+        public  ActionResult PartiallyUpdateCourseForAuthor(Guid authorId, Guid courseId, JsonPatchDocument<CourseForUpdateDto> patchDocument)
+        {
+            if (!repository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
+            var courseEntity = repository.GetCourse(authorId, courseId);
+            if (courseEntity == null)
+            {
+                return NotFound();
+            }
+            var courseToPatch = mapper.Map<CourseForUpdateDto>(courseEntity);
+            patchDocument.ApplyTo(courseToPatch);
+
+            mapper.Map(courseToPatch, courseEntity);
+            repository.UpdateCourse(courseEntity);
+            repository.Save();
+            return NoContent();
+        }
+
     }
 
     
