@@ -60,11 +60,23 @@ namespace RestApiCore3.API.Controllers
             return CreatedAtRoute("GetCourseForAuthor", new { authorId = authorId, courseId = courseToReturn.Id }, courseToReturn);
         }
         [HttpPut("{courseId}")]
-        public ActionResult<CourseDto> UpdateCourseForAuthor(Guid authorId, Guid courseId, CourseForUpdateDto courseForUpdate)
+        public IActionResult UpdateCourseForAuthor(Guid authorId, Guid courseId, CourseForUpdateDto courseForUpdate)
         {
+            if (!repository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
             var courseEntity = repository.GetCourse(authorId, courseId);
             if (courseEntity == null)
-                return NotFound();
+            {
+                courseEntity = mapper.Map<Course>(courseForUpdate);
+                courseEntity.Id = courseId;
+                repository.AddCourse(authorId,courseEntity);
+                repository.Save();
+                var courseToReturn = mapper.Map<CourseDto>(courseEntity);
+                return CreatedAtRoute("GetCourseForAuthor", new { authorId, courseId = courseToReturn.Id }, courseToReturn);
+
+            }
             mapper.Map(courseForUpdate, courseEntity);
             repository.UpdateCourse(courseEntity);
             repository.Save();

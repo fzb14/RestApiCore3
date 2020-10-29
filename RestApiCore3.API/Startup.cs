@@ -72,7 +72,8 @@ namespace RestApiCore3.API
             services.AddDbContext<RestApiCore3Context>(options =>
             {
                 options.UseSqlServer(
-                    @"Server=(localdb)\ProjectsV13;Database=RestApiCore3DB;Trusted_Connection=True;");
+                    @"Server=(localdb)\ProjectsV13;Database=RestApiCore3DB;Trusted_Connection=True;"
+                );
             }); 
         }
 
