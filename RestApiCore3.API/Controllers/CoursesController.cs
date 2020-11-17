@@ -97,7 +97,11 @@ namespace RestApiCore3.API.Controllers
                 return NotFound();
             }
             var courseToPatch = mapper.Map<CourseForUpdateDto>(courseEntity);
-            patchDocument.ApplyTo(courseToPatch);
+            patchDocument.ApplyTo(courseToPatch, ModelState);
+            //have to validate manually when update with patch
+            if (!TryValidateModel(courseToPatch)) {
+                return ValidationProblem(ModelState);
+            }
 
             mapper.Map(courseToPatch, courseEntity);
             repository.UpdateCourse(courseEntity);

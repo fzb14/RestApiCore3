@@ -35,11 +35,12 @@ namespace RestApiCore3.API
                 //setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
             })
                  .AddJsonOptions(o => o.JsonSerializerOptions.WriteIndented = true)
-                .AddXmlDataContractSerializerFormatters()//input and output
+                
                 .AddNewtonsoftJson(setupAction =>
                 {
                     setupAction.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 })
+                .AddXmlDataContractSerializerFormatters()//input and output
                 .ConfigureApiBehaviorOptions(setupAction => {
                     setupAction.InvalidModelStateResponseFactory = context =>
                     {
