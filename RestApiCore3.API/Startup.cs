@@ -13,6 +13,7 @@ using System;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Serialization;
 
 namespace RestApiCore3.API
 {
@@ -34,6 +35,11 @@ namespace RestApiCore3.API
                 //setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
             })
                  .AddJsonOptions(o => o.JsonSerializerOptions.WriteIndented = true)
+                
+                .AddNewtonsoftJson(setupAction =>
+                {
+                    setupAction.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                })
                 .AddXmlDataContractSerializerFormatters()//input and output
                 .ConfigureApiBehaviorOptions(setupAction => {
                     setupAction.InvalidModelStateResponseFactory = context =>
@@ -72,7 +78,8 @@ namespace RestApiCore3.API
             services.AddDbContext<RestApiCore3Context>(options =>
             {
                 options.UseSqlServer(
-                    @"Server=(localdb)\ProjectsV13;Database=RestApiCore3DB;Trusted_Connection=True;");
+                    @"Server=(localdb)\ProjectsV13;Database=RestApiCore3DB;Trusted_Connection=True;"
+                );
             }); 
         }
 
